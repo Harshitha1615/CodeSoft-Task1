@@ -1,0 +1,55 @@
+import java.util.Random;
+import java.util.Scanner;
+public class GuessTheNumberGame {
+    public static boolean playGame(int maxTries, int min, int max, Scanner input) {
+        Random rand = new Random();
+        int secretNumber = rand.nextInt(max - min + 1) + min;
+        int tryCount = 0;
+        System.out.println("\n🔢 I'm thinking of a number between " + min + " and " + max + ".");
+        System.out.println("💡 You have " + maxTries + " chances to guess it!");
+        while (tryCount < maxTries) {
+            System.out.print("Guess #" + (tryCount + 1) + ": ");
+            if (!input.hasNextInt()) {
+                System.out.println("⛔ That's not a number. Try again.");
+                input.next(); 
+                continue;
+            }
+            int userGuess = input.nextInt();
+            tryCount++;
+            if (userGuess == secretNumber) {
+                System.out.println("✅ Well done! You guessed the number in " + tryCount + " tries.");
+                return true;
+            } else if (userGuess < secretNumber) {
+                System.out.println("📉 Too low! Try a bigger number.");
+            } else {
+                System.out.println("📈 Too high! Try a smaller number.");
+            }
+        }
+        System.out.println("❌ You’ve used all your chances. The correct number was: " + secretNumber);
+        return false;
+    }
+    public static void main(String[] args) {
+        Scanner input = new Scanner(System.in);
+        final int MAX_TRIES = 6;
+        final int MIN_NUMBER = 1;
+        final int MAX_NUMBER = 100;
+        int gamesPlayed = 0;
+        int gamesWon = 0;
+        System.out.println("🎮 Welcome to the Guess-the-Number Game!");
+        boolean keepPlaying;
+        do {
+            gamesPlayed++;
+            boolean success = playGame(MAX_TRIES, MIN_NUMBER, MAX_NUMBER, input);
+            if (success) gamesWon++;
+            System.out.print("\n🔁 Play another round? (yes/no): ");
+            String again = input.next().trim().toLowerCase();
+            keepPlaying = again.equals("yes") || again.equals("y");
+        } while (keepPlaying);
+        System.out.println("\n🏁 Game Finished!");
+        System.out.println("🧾 Rounds Played: " + gamesPlayed);
+        System.out.println("🏆 Rounds Won: " + gamesWon);
+        double score = 100.0 * gamesWon / gamesPlayed;
+        System.out.printf("📊 Your Win Percentage: %.2f%%\n", score);
+        input.close();
+    }
+}
